@@ -4,7 +4,7 @@ import service from './services/current'
 
 
 function App() {
-  const [count, setCount] = useState(0)
+
   const[search,setSearch] = useState('')
   const[data,setData] = useState({})
   const [location,setLocation] = useState(null)
@@ -25,6 +25,8 @@ function App() {
       .then(res=>{
         console.log(res.data)
         setData(res.data)
+        const sr = new Date(res.data.sys.sunrise).toLocaleDateString("en-US")
+        console.log(sr)
       })
       .catch(err=>console.log("some error occured"))
     // const req = axios.get(`${baseUrl}?q=${search}&appid=${apiKey}`)
@@ -34,6 +36,36 @@ function App() {
 
   }
 
+  const Details = (data) =>{
+    
+      return(
+        <div>
+            <div>Location: {data ? data.name : null}</div>
+            <div>Temperature: {data ? data.main.temp : null} C</div>
+            <div>Humidity: {data ? data.main.humidity : null}</div> 
+            <div>Wind: {data ? data.wind.speed + ' mtr/sec': null}</div>
+            
+            <div>Cloudiness: {data ? data.clouds.all + '%': null} </div>
+            <div>Visibility: {data ? data.visibility + 'meters': null} </div>
+            <div>Sunrise: {data ? data.sys.sunrise : null}</div>
+            <div>Sunset: {data ? data.sys.sunset : null}</div>
+        </div>
+      )
+    
+  }
+
+  
+    const StampToDate = (sr) => {
+
+      const Time = new Date(sr).toLocaleTimeString("en-US")
+      console.log(Time)
+
+      return Time
+
+    }
+
+  
+
   return (
     <>
       
@@ -42,15 +74,19 @@ function App() {
       <div>
         <input onChange={handleChange}></input>
         <button onClick={handleClick}>Search</button>
-        <div>Location: {data.name}</div>
-        <div>Temperature: {data.main.temp} C</div>
-        <div>Humidity: {data.main.humidity}</div> 
-        <div>Wind: {data.wind.speed} mtr/sec</div>
+        {/* <Details data = {data} /> */}
+        <div>Location: {data ? data.name : null}</div>
+        <div>Temperature: {data.main ? data.main.temp + "C": null} </div>
+        <div>Humidity: {data.main ? data.main.humidity : null}</div> 
+        <div>Wind: {data.wind ? data.wind.speed + ' mtr/sec': null}</div>
         
-        <div>Cloudiness: {data.clouds.all} %</div>
-        <div>Visibility: {data.visibility} meters</div>
-        <div>Sunrise: {data.sys.sunrise}</div>
-        <div>Sunset: {data.sys.sunset}</div>
+        <div>Cloudiness: {data.clouds ? data.clouds.all + '%': null} </div>
+        <div>Visibility: {data.visibility ? data.visibility + ' meters': null} </div>
+        <div>Sunrise: {data.sys ? StampToDate(data.sys.sunrise): null}</div>
+        <div>Sunset: {data.sys ? StampToDate(data.sys.sunset) : null}</div>
+        
+        
+        
       </div>
     </>
   )
